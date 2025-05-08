@@ -159,6 +159,7 @@ const UserTable = () => {
     { label: "Email", key: "contact.email" },
     { label: "Phone", key: "contact.Phone" },
     { label: "Telephone", key: "contact.telephone" }
+    // Add more headers as needed
   ];
 
   const exportData = filteredData.map(user => ({
