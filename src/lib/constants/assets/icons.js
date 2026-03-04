@@ -79,4 +79,10 @@ export const ICONS = {
         alt:"filter"
 
     },
+
+    //user modal
+    upload:{
+        src:"/assets/icons/uploadIcon.svg",
+        alt:"upload"
+    }
 }

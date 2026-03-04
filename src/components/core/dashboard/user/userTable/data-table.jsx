@@ -6,7 +6,6 @@ import {
   useReactTable,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingState,
 } from "@tanstack/react-table";
 
 import {
@@ -20,7 +19,7 @@ import {
 import { DataTablePagination } from "@/components/ui/DataTablePagination";
 import { useState } from "react";
 
-export function DataTable({ columns, data }) {
+export function DataTable({ columns, data, onRowSelectionChange, rowSelection }) {
   const [sorting, setSorting] = useState([]);
   const table = useReactTable({
     data,
@@ -29,13 +28,15 @@ export function DataTable({ columns, data }) {
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onRowSelectionChange,
     state: {
       sorting,
+      rowSelection,
     },
   });
 
   return (
-    <div className= "flex flex-col max-h-full overflow-y-auto">
+    <div className= "flex flex-col max-h-full lg:w-full md:w-[clamp(350px,70vw,1200px)] w-[clamp(350px,95vw,1200px)]  overflow-y-auto">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

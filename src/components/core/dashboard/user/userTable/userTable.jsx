@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import { DataTable } from "./data-table";
 import { columns } from "./column";
 import { UserData } from "@/data/UsersData";
@@ -21,6 +21,7 @@ import {
 import Image from "next/image";
 import { ICONS } from "@/lib/constants/assets/icons";
 import dynamic from "next/dynamic"; // <-- Add this import
+import AddEmployeeModal from "../../modals/addEmployeeModal";
 
 // Dynamic import for CSVLink (client-side only)
 const CSVLink = dynamic(
@@ -38,11 +39,20 @@ const UserTable = () => {
   const [selectedDepartments, setSelectedDepartments] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [rowSelection, setRowSelection] = useState({});
+  const [isAddEmployeeModal, setIsAddEmployeeModal] = useState(false);
+  
 
 
   // Extract unique departments and designations from data
   const allDepartments = [...new Set(UserData.map(item => item.company.department))];
   const allDesignations = [...new Set(UserData.map(item => item.company.Designation))];
+
+  const selectedRows = useMemo(() => {
+    return Object.keys(rowSelection).map((rowIndex) => {
+      return filteredData[parseInt(rowIndex)];
+    })
+  }, [rowSelection, filteredData]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -83,6 +93,7 @@ const UserTable = () => {
     }
 
     setFilteredData(result);
+    setRowSelection({}); 
   }, [selectedDesignations, selectedDepartments, searchQuery, data]);
 
 
@@ -106,6 +117,15 @@ const UserTable = () => {
     setSelectedDesignations([]);
     setSelectedDepartments([]);
   };
+
+  const handleBulkDelete = () => {
+    if (selectedRows.length === 0) return;
+
+    console.log("Bulk delete:");
+    selectedRows.forEach((row) => {
+      console.log(row);
+    });
+  }
 
   // Create filter chip components
   const renderFilterChipsDesg = () => {
@@ -187,13 +207,21 @@ const UserTable = () => {
           </Button>
         </div>
         <div className="flex gap-4">
+          {selectedRows.length > 0 && (
+            <Button 
+            className={"bg-[#F2185D] hover:bg-[#df1253] w-[160px] text-grey-50"}
+            onClick = {handleBulkDelete}>Bulk Delete</Button>
+          )}
           <CSVLink data={exportData} headers={headers} filename="user_data.csv">
             <Button className={"bg-grey-300 hover:bg-grey-400 w-[130px] text-grey-700"}>
               <Image src={ICONS.export.src} alt={ICONS.export.alt} width={24} height={24} />
               Export
             </Button>
           </CSVLink>
-          <Button className={"bg-[#5762E3] hover:bg-[#3948e4] w-[160px] text-grey-50"}>Add Employee</Button>
+          <Button
+          onClick={() => setIsAddEmployeeModal(true)}
+          variant={"primary"}
+          className={" sm:w-[160px] w-[140px] text-grey-50"}>Add Employee</Button>
         </div>
       </div>
       <div className={`flex flex-col justify-between md:flex-row gap-4  ${showFilters ? "block" : "hidden"}`}>
@@ -284,8 +312,13 @@ const UserTable = () => {
           Loading...
         </div>
       ) : (
-        <DataTable columns={columns} data={filteredData} />
+        <DataTable columns={columns} data={filteredData} 
+        onRowSelectionChange={setRowSelection}
+        rowSelection={rowSelection}/>
       )}
+      <AddEmployeeModal
+      open={isAddEmployeeModal}
+      onOpenChange={setIsAddEmployeeModal}/>
     </div>
   );
 };

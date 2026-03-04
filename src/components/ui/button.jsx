@@ -11,6 +11,8 @@ const buttonVariants = cva(
       variant: {
         default:
           "bg-primary cursor-pointer text-primary-foreground shadow-xs hover:bg-primary/90",
+          primary:
+          "bg-[#5762E3] hover:bg-[#3948e4] cursor-pointer text-primary-foreground shadow-xs",
         active:
           "bg-[#636DE8] cursor-pointer text-primary-foreground shadow-xs hover:bg-[#726EF9] text-white",
         destructive:
@@ -30,6 +32,7 @@ const buttonVariants = cva(
         default: "h-[40px] px-10 py-[8px] has-[>svg]:px-3",
         sm: "h-[30px] rounded-[4px]  px-[7px] has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        full: "w-full h-[40px] px-10 py-[8px] has-[>svg]:px-3",
         icon: "size-9",
       },
     },
